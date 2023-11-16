@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>URL Shortener Microservice</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+	<meta charset="UTF-8"/>
+	<link rel="stylesheet" href="../public/url-shortener-microservice.css"/>
+</head>
+<body>
+	<div class="main-container">
+		<header>
+			<h1>URL Shortener Microservice</h1>
+			<h2>Short URL Creation</h2>
+		</header>
+		<main>
+			<p>Example: <code>POST [project_url]/api/shorturl</code> - <code>https://www.google.com</code></p>
+			<fieldset>
+				<legend>URL Shortener</legend>
+				<form method="POST" action="/api/shorturl">
+					<label for="url">Place your URL here:</label>
+					<input placeholder="https://freecodecamp.org/" type="url" id="url" name="url"/>
+					<input type="submit" value="Submit"/>
+				</form>
+			</fieldset>
+			<p><small>Your valid URL entries will show here as well</small></p>
+			<p><small>
+				<b>*You need to click refresh after returning from the JSON response</b>
+			</small></p>
+			<h3>Here are some samples to give you an idea</h3>
+			<ul></ul>
+			<script>
+			const list = $("ul");
+			window.addEventListener("load", (event)=>{
+				fetch("http://localhost:3000/api/entries")
+				.then((response)=> response.json())
+				.then((data)=>{
+					displayEntries(data, list);
+				})
+				.catch((err)=> console.error(err))
+			})
+			const form = $("form");
+			form.addEventListener("submit",(event)=>{
+				fetch("http://localhost:3000/api/entries")
+				.then((response)=> response.json())
+				.then((data)=>{
+					displayEntries(data, list);
+				})
+				.catch((err)=> console.error(err))
+			})
+			function displayEntries(data, list){
+				const li = $("li", true);
+				li.forEach((li)=> li.remove())
+				data.forEach((item)=>{
+					list.insertAdjacentHTML("afterbegin",`
+						<li>
+							<div class="entry-wrapper">
+								<p><span>Entered URL:</span> ${item.url}</p>
+								<p><span>Short URL created:</span> <a href="/api/shorturl/${item.shortURL}">/api/shorturl/${item.shortURL}</a></p>
+							</div>
+						</li>
+					`)
+				})
+			}
+			function $(id,all){
+				return all ? document.querySelectorAll(id) : document.querySelector(id);
+			}
+			</script>
+		</main>	
+		<footer>
+			<p>Challenge name: <a href="https://www.freecodecamp.org/learn/back-end-development-and-apis/back-end-development-and-apis-projects/url-shortener-microservice">URL-Shortener-Microservice</a></p>
+			<p>By Eddie per <a href="https://www.freecodecamp.org">freeCodeCamp.org</a> challenge
+		</footer>
+	</div>
+</body>
+</html>
